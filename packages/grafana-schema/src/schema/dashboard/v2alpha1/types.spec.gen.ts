@@ -1001,6 +1001,8 @@ export interface QueryVariableSpec {
 	allValue?: string;
 	placeholder?: string;
 	allowCustomValue: boolean;
+	staticOptions?: VariableOption[];
+	staticOptionsOrder?: "before" | "after" | "sorted";
 }
 
 export const defaultQueryVariableSpec = (): QueryVariableSpec => ({
