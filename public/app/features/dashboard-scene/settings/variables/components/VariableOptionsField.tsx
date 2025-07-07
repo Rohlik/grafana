@@ -1,5 +1,6 @@
 import { useState } from 'react';
 
+import { selectors } from '@grafana/e2e-selectors';
 import { t, Trans } from '@grafana/i18n';
 import { VariableValueOption } from '@grafana/scenes';
 import { Button, Field, Input, Stack } from '@grafana/ui';
@@ -16,7 +17,7 @@ export function VariableOptionsField({ options, onChange, width }: VariableOptio
   const updateOptions = (newOptions: VariableValueOption[]) => {
     setOptionsLocal(newOptions);
     onChange(
-      optionsLocal
+      newOptions
         .map((option) => ({
           label: option.label.trim(),
           value: String(option.value).trim(),
@@ -62,11 +63,18 @@ export function VariableOptionsField({ options, onChange, width }: VariableOptio
     >
       <Stack direction="column" gap={2} width={width}>
         {optionsLocal.map((option, index) => (
-          <Stack direction="row" key={index}>
+          <Stack
+            direction="row"
+            key={index}
+            data-testid={selectors.pages.Dashboard.Settings.Variables.Edit.QueryVariable.queryOptionsStaticOptionsRow}
+          >
             <Input
               value={option.label}
               placeholder={t('variables.query-variable-static-options.label-placeholder', 'display label')}
               onChange={(e) => handleLabelChange(index, e.currentTarget.value)}
+              data-testid={
+                selectors.pages.Dashboard.Settings.Variables.Edit.QueryVariable.queryOptionsStaticOptionsLabelInput
+              }
             />
             <Input
               value={String(option.value)}
@@ -75,12 +83,18 @@ export function VariableOptionsField({ options, onChange, width }: VariableOptio
                 'value, default empty string'
               )}
               onChange={(e) => handleValueChange(index, e.currentTarget.value)}
+              data-testid={
+                selectors.pages.Dashboard.Settings.Variables.Edit.QueryVariable.queryOptionsStaticOptionsValueInput
+              }
             />
             <Button
               icon="times"
               variant="secondary"
               aria-label={t('variables.query-variable-static-options.remove-option-button-label', 'Remove option')}
               onClick={() => removeOption(index)}
+              data-testid={
+                selectors.pages.Dashboard.Settings.Variables.Edit.QueryVariable.queryOptionsStaticOptionsDeleteButton
+              }
             />
           </Stack>
         ))}
@@ -89,6 +103,9 @@ export function VariableOptionsField({ options, onChange, width }: VariableOptio
             icon="plus"
             variant="secondary"
             onClick={addOption}
+            data-testid={
+              selectors.pages.Dashboard.Settings.Variables.Edit.QueryVariable.queryOptionsStaticOptionsAddButton
+            }
             aria-label={t('variables.query-variable-static-options.add-option-button-label', 'Add option')}
           >
             <Trans i18nKey="variables.query-variable-static-options.add-option-button-label">Add option</Trans>

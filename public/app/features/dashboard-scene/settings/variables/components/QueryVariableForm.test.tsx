@@ -146,8 +146,8 @@ describe('QueryVariableEditorForm', () => {
       selectors.pages.Dashboard.Settings.Variables.Edit.General.selectionOptionsAllowCustomValueSwitch
     );
 
-    const staticOptionsInput = getByTestId(
-      selectors.pages.Dashboard.Settings.Variables.Edit.QueryVariable.queryOptionsStaticOptionsInput
+    const staticOptionsRow = getByTestId(
+      selectors.pages.Dashboard.Settings.Variables.Edit.QueryVariable.queryOptionsStaticOptionsRow
     );
     const staticOptionsOrderDropdown = getByTestId(
       selectors.pages.Dashboard.Settings.Variables.Edit.QueryVariable.queryOptionsStaticOptionsOrderDropdown
@@ -169,7 +169,7 @@ describe('QueryVariableEditorForm', () => {
     expect(includeAllSwitch).toBeChecked();
     expect(allValueInput).toBeInTheDocument();
     expect(allValueInput).toHaveValue('custom all value');
-    expect(staticOptionsInput).toBeInTheDocument();
+    expect(staticOptionsRow).toBeInTheDocument();
     expect(staticOptionsOrderDropdown).toBeInTheDocument();
   });
 
@@ -307,19 +307,6 @@ describe('QueryVariableEditorForm', () => {
     ).toBe('custom all value and another value');
   });
 
-  it('should call onStaticOptionsChange when changing the static options', async () => {
-    const {
-      renderer: { getByTestId },
-    } = await setup();
-    const staticOptionsInput = getByTestId(
-      selectors.pages.Dashboard.Settings.Variables.Edit.QueryVariable.queryOptionsStaticOptionsInput
-    );
-    await userEvent.type(staticOptionsInput, 'foo : bar');
-    await userEvent.tab();
-    expect(mockOnStaticOptionsChange).toHaveBeenCalledTimes(1);
-    expect(mockOnStaticOptionsChange.mock.calls[0][0]).toBe('foo : bar');
-  });
-
   it('should call onStaticOptionsOrderChange when changing the static options order', async () => {
     const {
       renderer: { getByTestId },
@@ -333,5 +320,94 @@ describe('QueryVariableEditorForm', () => {
 
     expect(mockOnStaticOptionsOrderChange).toHaveBeenCalledTimes(1);
     expect(mockOnStaticOptionsOrderChange.mock.calls[0][0]).toBe('after');
+  });
+
+  it('should call onStaticOptionsChange when adding a static option', async () => {
+    const {
+      renderer: { getByTestId, getAllByTestId },
+    } = await setup();
+
+    const addButton = getByTestId(
+      selectors.pages.Dashboard.Settings.Variables.Edit.QueryVariable.queryOptionsStaticOptionsAddButton
+    );
+    await userEvent.click(addButton);
+
+    // Now enter label and value for the new option
+    const labelInputs = getAllByTestId(
+      selectors.pages.Dashboard.Settings.Variables.Edit.QueryVariable.queryOptionsStaticOptionsLabelInput
+    );
+    const valueInputs = getAllByTestId(
+      selectors.pages.Dashboard.Settings.Variables.Edit.QueryVariable.queryOptionsStaticOptionsValueInput
+    );
+
+    // Enter label for the new option (second input)
+    await userEvent.type(labelInputs[1], 'New Option Label');
+    await userEvent.type(valueInputs[1], 'new-option-value');
+
+    expect(mockOnStaticOptionsChange).toHaveBeenCalled();
+    expect(mockOnStaticOptionsChange.mock.lastCall[0]).toEqual([
+      { value: 'new-option-value', label: 'New Option Label' },
+    ]);
+  });
+
+  it('should call onStaticOptionsChange when removing a static option', async () => {
+    const {
+      renderer: { getAllByTestId },
+    } = await setup({
+      ...defaultProps,
+      staticOptions: [
+        { value: 'option1', label: 'Option 1' },
+        { value: 'option2', label: 'Option 2' },
+      ],
+    });
+
+    const deleteButtons = getAllByTestId(
+      selectors.pages.Dashboard.Settings.Variables.Edit.QueryVariable.queryOptionsStaticOptionsDeleteButton
+    );
+
+    // Remove the first option
+    await userEvent.click(deleteButtons[0]);
+
+    expect(mockOnStaticOptionsChange).toHaveBeenCalledTimes(1);
+    // Should call with only the second option remaining
+    expect(mockOnStaticOptionsChange.mock.calls[0][0]).toEqual([{ value: 'option2', label: 'Option 2' }]);
+  });
+
+  it('should call onStaticOptionsChange when editing a static option label', async () => {
+    const {
+      renderer: { getAllByTestId },
+    } = await setup({
+      ...defaultProps,
+      staticOptions: [{ value: 'test', label: 'Test Label' }],
+    });
+
+    const labelInputs = getAllByTestId(
+      selectors.pages.Dashboard.Settings.Variables.Edit.QueryVariable.queryOptionsStaticOptionsLabelInput
+    );
+
+    await userEvent.clear(labelInputs[0]);
+    await userEvent.type(labelInputs[0], 'Updated Label');
+
+    expect(mockOnStaticOptionsChange).toHaveBeenCalled();
+    expect(mockOnStaticOptionsChange.mock.lastCall[0]).toEqual([{ value: 'test', label: 'Updated Label' }]);
+  });
+
+  it('should call onStaticOptionsChange when editing a static option value', async () => {
+    const {
+      renderer: { getAllByTestId },
+    } = await setup({
+      ...defaultProps,
+      staticOptions: [{ value: 'old-value', label: 'Test Label' }],
+    });
+
+    const valueInputs = getAllByTestId(
+      selectors.pages.Dashboard.Settings.Variables.Edit.QueryVariable.queryOptionsStaticOptionsValueInput
+    );
+
+    await userEvent.clear(valueInputs[0]);
+    await userEvent.type(valueInputs[0], 'new-value');
+
+    expect(mockOnStaticOptionsChange).toHaveBeenCalled();
+    expect(mockOnStaticOptionsChange.mock.lastCall[0]).toEqual([{ value: 'new-value', label: 'Test Label' }]);
   });
 });

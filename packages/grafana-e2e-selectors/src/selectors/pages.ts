@@ -489,8 +489,20 @@ export const versionedPages = {
             queryOptionsQueryInput: {
               '10.4.0': 'data-testid Variable editor Form Default Variable Query Editor textarea',
             },
-            queryOptionsStaticOptionsInput: {
-              [MIN_GRAFANA_VERSION]: 'Variable editor Form Query Static Options field',
+            queryOptionsStaticOptionsRow: {
+              [MIN_GRAFANA_VERSION]: 'Variable editor Form Query Static Options row',
+            },
+            queryOptionsStaticOptionsLabelInput: {
+              [MIN_GRAFANA_VERSION]: 'Variable editor Form Query Static Options Label input',
+            },
+            queryOptionsStaticOptionsValueInput: {
+              [MIN_GRAFANA_VERSION]: 'Variable editor Form Query Static Options Value input',
+            },
+            queryOptionsStaticOptionsDeleteButton: {
+              [MIN_GRAFANA_VERSION]: 'Variable editor Form Query Static Options Delete button',
+            },
+            queryOptionsStaticOptionsAddButton: {
+              [MIN_GRAFANA_VERSION]: 'Variable editor Form Query Static Options Add button',
             },
             queryOptionsStaticOptionsOrderDropdown: {
               [MIN_GRAFANA_VERSION]: 'Variable editor Form Query Static Options Order dropdown',
