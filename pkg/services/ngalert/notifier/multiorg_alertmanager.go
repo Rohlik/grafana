@@ -75,6 +75,8 @@ type Alertmanager interface {
 	// Lifecycle
 	StopAndWait()
 	Ready() bool
+
+	GetBase() *alertingNotify.GrafanaAlertmanager
 }
 
 type MultiOrgAlertmanager struct {
