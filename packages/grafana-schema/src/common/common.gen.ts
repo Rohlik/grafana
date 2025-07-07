@@ -755,6 +755,7 @@ export const defaultTableFooterOptions: Partial<TableFooterOptions> = {
  * Auto mode table cell options
  */
 export interface TableAutoCellOptions {
+  maxWrappedLines?: number;
   type: TableCellDisplayMode.Auto;
   wrapText?: boolean;
 }
@@ -763,6 +764,7 @@ export interface TableAutoCellOptions {
  * Colored text cell options
  */
 export interface TableColorTextCellOptions {
+  maxWrappedLines?: number;
   type: TableCellDisplayMode.ColorText;
   wrapText?: boolean;
 }
@@ -819,6 +821,7 @@ export interface TableSparklineCellOptions extends GraphFieldConfig {
  */
 export interface TableColoredBackgroundCellOptions {
   applyToRow?: boolean;
+  maxWrappedLines?: number;
   mode?: TableCellBackgroundDisplayMode;
   type: TableCellDisplayMode.ColorBackground;
   wrapText?: boolean;
