@@ -16,6 +16,8 @@ import { t } from '@grafana/i18n';
 import { useTheme2, Select, StatsPicker, InlineField, Stack, Alert } from '@grafana/ui';
 
 import { getTransformationContent } from '../docs/getTransformationContent';
+import darkImage from '../images/dark/groupBy.svg';
+import lightImage from '../images/light/groupBy.svg';
 import { useAllFieldNamesFromDataFrames } from '../utils';
 
 interface FieldProps {
@@ -165,4 +167,6 @@ export const groupByTransformRegistryItem: TransformerRegistryItem<GroupByTransf
     TransformerCategory.Reformat,
   ]),
   help: getTransformationContent(DataTransformerID.groupBy).helperDocs,
+  imageDark: darkImage,
+  imageLight: lightImage,
 };

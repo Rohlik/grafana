@@ -9,6 +9,9 @@ import { TransposeTransformerOptions } from '@grafana/data/internal';
 import { t } from '@grafana/i18n';
 import { InlineField, InlineFieldRow, Input } from '@grafana/ui';
 
+import darkImage from '../images/dark/transpose.svg';
+import lightImage from '../images/light/transpose.svg';
+
 export const TransposeTransfomerEditor = ({ options, onChange }: TransformerUIProps<TransposeTransformerOptions>) => {
   return (
     <>
@@ -50,4 +53,6 @@ export const transposeTransformerRegistryItem: TransformerRegistryItem<Transpose
   name: standardTransformers.transposeTransformer.name,
   description: standardTransformers.transposeTransformer.description,
   categories: new Set([TransformerCategory.Reformat]),
+  imageDark: darkImage,
+  imageLight: lightImage,
 };

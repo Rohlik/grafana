@@ -14,6 +14,8 @@ import { fieldMatchersUI, InlineField, InlineFieldRow, Select, useStyles2 } from
 
 import { getTransformationContent } from '../docs/getTransformationContent';
 import { FieldToConfigMappingEditor } from '../fieldToConfigMapping/FieldToConfigMappingEditor';
+import darkImage from '../images/dark/configFromData.svg';
+import lightImage from '../images/light/configFromData.svg';
 
 import { configFromDataTransformer, ConfigFromQueryTransformOptions } from './configFromQuery';
 
@@ -107,6 +109,8 @@ export const configFromQueryTransformRegistryItem: TransformerRegistryItem<Confi
   state: PluginState.beta,
   categories: new Set([TransformerCategory.CalculateNewFields]),
   help: getTransformationContent(configFromDataTransformer.id).helperDocs,
+  imageDark: darkImage,
+  imageLight: lightImage,
 };
 
 const getStyles = (theme: GrafanaTheme2) => ({

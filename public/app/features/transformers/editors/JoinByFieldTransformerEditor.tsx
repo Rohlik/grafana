@@ -15,6 +15,8 @@ import { Select, InlineFieldRow, InlineField } from '@grafana/ui';
 import { useFieldDisplayNames, useSelectOptions } from '@grafana/ui/internal';
 
 import { getTransformationContent } from '../docs/getTransformationContent';
+import darkImage from '../images/dark/joinByField.svg';
+import lightImage from '../images/light/joinByField.svg';
 
 const modes = [
   {
@@ -107,4 +109,6 @@ export const joinByFieldTransformerRegistryItem: TransformerRegistryItem<JoinByF
   description: standardTransformers.joinByFieldTransformer.description,
   categories: new Set([TransformerCategory.Combine]),
   help: getTransformationContent(DataTransformerID.joinByField).helperDocs,
+  imageDark: darkImage,
+  imageLight: lightImage,
 };

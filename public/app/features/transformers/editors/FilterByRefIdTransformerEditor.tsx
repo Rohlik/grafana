@@ -10,6 +10,8 @@ import { FilterFramesByRefIdTransformerOptions } from '@grafana/data/internal';
 import { FrameMultiSelectionEditor } from 'app/plugins/panel/geomap/editor/FrameSelectionEditor';
 
 import { getTransformationContent } from '../docs/getTransformationContent';
+import darkImage from '../images/dark/filterByRefId.svg';
+import lightImage from '../images/light/filterByRefId.svg';
 
 export const FilterByRefIdTransformerEditor = (props: TransformerUIProps<FilterFramesByRefIdTransformerOptions>) => {
   return (
@@ -39,4 +41,6 @@ export const filterFramesByRefIdTransformRegistryItem: TransformerRegistryItem<F
       'Filter data by query. This is useful if you are sharing the results from a different panel that has many queries and you want to only visualize a subset of that in this panel.',
     categories: new Set([TransformerCategory.Filter]),
     help: getTransformationContent(DataTransformerID.filterByRefId).helperDocs,
+    imageDark: darkImage,
+    imageLight: lightImage,
   };

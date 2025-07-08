@@ -13,6 +13,8 @@ import { Trans, t } from '@grafana/i18n';
 import { InlineField, InlineFieldRow, Select, useStyles2 } from '@grafana/ui';
 
 import { getTransformationContent } from '../docs/getTransformationContent';
+import darkImage from '../images/dark/prepareTimeSeries.svg';
+import lightImage from '../images/light/prepareTimeSeries.svg';
 
 import { prepareTimeSeriesTransformer, PrepareTimeSeriesOptions, timeSeriesFormat } from './prepareTimeSeries';
 
@@ -162,4 +164,6 @@ export const prepareTimeseriesTransformerRegistryItem: TransformerRegistryItem<P
   description: prepareTimeSeriesTransformer.description,
   categories: new Set([TransformerCategory.Reformat]),
   help: getTransformationContent(prepareTimeSeriesTransformer.id).helperDocs,
+  imageDark: darkImage,
+  imageLight: lightImage,
 };

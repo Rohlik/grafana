@@ -13,6 +13,8 @@ import { t } from '@grafana/i18n';
 import { InlineField, InlineFieldRow, RadioButtonGroup, Select, FilterPill, Stack } from '@grafana/ui';
 
 import { getTransformationContent } from '../docs/getTransformationContent';
+import darkImage from '../images/dark/labelsToFields.svg';
+import lightImage from '../images/light/labelsToFields.svg';
 
 const modes: Array<SelectableValue<LabelsToFieldsMode>> = [
   { value: LabelsToFieldsMode.Columns, label: 'Columns' },
@@ -142,4 +144,6 @@ export const labelsToFieldsTransformerRegistryItem: TransformerRegistryItem<Labe
                 Useful for showing time series with labels in a table where each label key becomes a separate column.`,
   categories: new Set([TransformerCategory.Reformat]),
   help: getTransformationContent(DataTransformerID.labelsToFields).helperDocs,
+  imageDark: darkImage,
+  imageLight: lightImage,
 };

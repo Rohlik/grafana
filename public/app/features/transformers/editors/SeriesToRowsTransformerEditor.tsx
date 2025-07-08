@@ -8,6 +8,8 @@ import {
 import { SeriesToRowsTransformerOptions } from '@grafana/data/internal';
 
 import { getTransformationContent } from '../docs/getTransformationContent';
+import darkImage from '../images/dark/seriesToRows.svg';
+import lightImage from '../images/light/seriesToRows.svg';
 
 export const SeriesToRowsTransformerEditor = ({
   input,
@@ -26,4 +28,6 @@ export const seriesToRowsTransformerRegistryItem: TransformerRegistryItem<Series
                 Useful for showing multiple time series visualized in a table.`,
   categories: new Set([TransformerCategory.Combine, TransformerCategory.Reformat]),
   help: getTransformationContent(DataTransformerID.seriesToRows).helperDocs,
+  imageDark: darkImage,
+  imageLight: lightImage,
 };

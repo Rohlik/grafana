@@ -16,6 +16,8 @@ import { FieldNamePicker } from '@grafana/ui/internal';
 import { GazetteerPathEditor, GazetteerPathEditorConfigSettings } from 'app/features/geo/editor/GazetteerPathEditor';
 
 import { getTransformationContent } from '../docs/getTransformationContent';
+import darkImage from '../images/dark/fieldLookup.svg';
+import lightImage from '../images/light/fieldLookup.svg';
 
 import { FieldLookupOptions, fieldLookupTransformer } from './fieldLookup';
 
@@ -96,4 +98,6 @@ export const fieldLookupTransformRegistryItem: TransformerRegistryItem<FieldLook
   state: PluginState.alpha,
   categories: new Set([TransformerCategory.PerformSpatialOperations]),
   help: getTransformationContent(DataTransformerID.fieldLookup).helperDocs,
+  imageDark: darkImage,
+  imageLight: lightImage,
 };

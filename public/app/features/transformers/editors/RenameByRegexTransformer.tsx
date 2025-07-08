@@ -13,6 +13,8 @@ import { t } from '@grafana/i18n';
 import { InlineField, Input } from '@grafana/ui';
 
 import { getTransformationContent } from '../docs/getTransformationContent';
+import darkImage from '../images/dark/renameByRegex.svg';
+import lightImage from '../images/light/renameByRegex.svg';
 
 interface RenameByRegexTransformerEditorProps extends TransformerUIProps<RenameByRegexTransformerOptions> {}
 
@@ -128,4 +130,6 @@ export const renameByRegexTransformRegistryItem: TransformerRegistryItem<RenameB
   description: 'Renames part of the query result by using regular expression with placeholders.',
   categories: new Set([TransformerCategory.ReorderAndRename]),
   help: getTransformationContent(DataTransformerID.renameByRegex).helperDocs,
+  imageDark: darkImage,
+  imageLight: lightImage,
 };

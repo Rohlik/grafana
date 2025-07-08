@@ -12,6 +12,8 @@ import { Trans, t } from '@grafana/i18n';
 import { Alert, HorizontalGroup, InlineField, InlineFieldRow, Select, ValuePicker } from '@grafana/ui';
 
 import { getTransformationContent } from '../docs/getTransformationContent';
+import darkImage from '../images/dark/joinByLabels.svg';
+import lightImage from '../images/light/joinByLabels.svg';
 import { getDistinctLabels } from '../utils';
 
 import { joinByLabelsTransformer, JoinByLabelsTransformOptions } from './joinByLabels';
@@ -187,4 +189,6 @@ export const joinByLabelsTransformRegistryItem: TransformerRegistryItem<JoinByLa
   state: PluginState.beta,
   categories: new Set([TransformerCategory.Combine]),
   help: getTransformationContent(joinByLabelsTransformer.id).helperDocs,
+  imageDark: darkImage,
+  imageLight: lightImage,
 };

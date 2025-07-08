@@ -36,6 +36,8 @@ import {
 
 import { createFieldsOrdererAuto } from '../../../../../packages/grafana-data/src/transformations/transformers/order';
 import { getTransformationContent } from '../docs/getTransformationContent';
+import darkImage from '../images/dark/organize.svg';
+import lightImage from '../images/light/organize.svg';
 import { getAllFieldNamesFromDataFrames, getDistinctLabels, useAllFieldNamesFromDataFrames } from '../utils';
 
 interface OrganizeFieldsTransformerEditorProps extends TransformerUIProps<OrganizeFieldsTransformerOptions> {}
@@ -504,4 +506,6 @@ export const organizeFieldsTransformRegistryItem: TransformerRegistryItem<Organi
     "Allows the user to re-order, hide, or rename fields / columns. Useful when data source doesn't allow overrides for visualizing data.",
   categories: new Set([TransformerCategory.ReorderAndRename]),
   help: getTransformationContent(DataTransformerID.organize).helperDocs,
+  imageDark: darkImage,
+  imageLight: lightImage,
 };

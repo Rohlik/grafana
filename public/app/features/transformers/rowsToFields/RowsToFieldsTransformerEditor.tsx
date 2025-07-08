@@ -2,6 +2,8 @@ import { PluginState, TransformerRegistryItem, TransformerUIProps, TransformerCa
 
 import { getTransformationContent } from '../docs/getTransformationContent';
 import { FieldToConfigMappingEditor } from '../fieldToConfigMapping/FieldToConfigMappingEditor';
+import darkImage from '../images/dark/rowsToFields.svg';
+import lightImage from '../images/light/rowsToFields.svg';
 
 import { rowsToFieldsTransformer, RowToFieldsTransformOptions } from './rowsToFields';
 
@@ -33,4 +35,6 @@ export const rowsToFieldsTransformRegistryItem: TransformerRegistryItem<RowToFie
   state: PluginState.beta,
   categories: new Set([TransformerCategory.Reformat]),
   help: getTransformationContent(rowsToFieldsTransformer.id).helperDocs,
+  imageDark: darkImage,
+  imageLight: lightImage,
 };

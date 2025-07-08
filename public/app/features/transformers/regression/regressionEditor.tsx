@@ -15,6 +15,8 @@ import { FieldNamePicker } from '@grafana/ui/internal';
 import { NumberInput } from 'app/core/components/OptionsUI/NumberInput';
 
 import { getTransformationContent } from '../docs/getTransformationContent';
+import darkImage from '../images/dark/regression.svg';
+import lightImage from '../images/light/regression.svg';
 
 import { DEFAULTS, DEGREES, ModelType, RegressionTransformer, RegressionTransformerOptions } from './regression';
 
@@ -165,4 +167,6 @@ export const regressionTransformerRegistryItem: TransformerRegistryItem<Regressi
   description: RegressionTransformer.description,
   categories: new Set([TransformerCategory.CalculateNewFields]),
   help: getTransformationContent(DataTransformerID.regression).helperDocs,
+  imageDark: darkImage,
+  imageLight: lightImage,
 };

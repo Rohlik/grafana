@@ -14,6 +14,8 @@ import { Trans, t } from '@grafana/i18n';
 import { Select, InlineFieldRow, InlineField, Input, TextLink } from '@grafana/ui';
 
 import { getTransformationContent } from '../docs/getTransformationContent';
+import darkImage from '../images/dark/formatTime.svg';
+import lightImage from '../images/light/formatTime.svg';
 import { getTimezoneOptions } from '../utils';
 
 export function FormatTimeTransfomerEditor({
@@ -125,4 +127,6 @@ export const formatTimeTransformerRegistryItem: TransformerRegistryItem<FormatTi
   state: PluginState.alpha,
   description: standardTransformers.formatTimeTransformer.description,
   help: getTransformationContent(DataTransformerID.formatTime).helperDocs,
+  imageDark: darkImage,
+  imageLight: lightImage,
 };

@@ -10,6 +10,8 @@ import { Trans } from '@grafana/i18n';
 import { FieldValidationMessage } from '@grafana/ui';
 
 import { getTransformationContent } from '../docs/getTransformationContent';
+import darkImage from '../images/dark/merge.svg';
+import lightImage from '../images/light/merge.svg';
 
 export const MergeTransformerEditor = ({ input, options, onChange }: TransformerUIProps<MergeTransformerOptions>) => {
   if (input.length <= 1) {
@@ -34,4 +36,6 @@ export const mergeTransformerRegistryItem: TransformerRegistryItem<MergeTransfor
                 Useful for showing multiple series, tables or a combination of both visualized in a table.`,
   categories: new Set([TransformerCategory.Combine]),
   help: getTransformationContent(DataTransformerID.merge).helperDocs,
+  imageDark: darkImage,
+  imageLight: lightImage,
 };

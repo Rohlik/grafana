@@ -15,6 +15,8 @@ import { t } from '@grafana/i18n';
 import { InlineFieldRow, InlineField, StatsPicker, Select, InlineLabel } from '@grafana/ui';
 
 import { getTransformationContent } from '../docs/getTransformationContent';
+import darkImage from '../images/dark/timeSeriesTable.svg';
+import lightImage from '../images/light/timeSeriesTable.svg';
 
 import {
   timeSeriesTableTransformer,
@@ -131,4 +133,6 @@ export const timeSeriesTableTransformRegistryItem: TransformerRegistryItem<TimeS
   description: timeSeriesTableTransformer.description,
   state: PluginState.beta,
   help: getTransformationContent(timeSeriesTableTransformer.id).helperDocs,
+  imageDark: darkImage,
+  imageLight: lightImage,
 };

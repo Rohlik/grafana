@@ -24,6 +24,8 @@ import { Trans, t } from '@grafana/i18n';
 import { Button, RadioButtonGroup, InlineField, Box } from '@grafana/ui';
 
 import { getTransformationContent } from '../docs/getTransformationContent';
+import darkImage from '../images/dark/filterByValue.svg';
+import lightImage from '../images/light/filterByValue.svg';
 
 import { DataFrameFieldsInfo, FilterByValueFilterEditor } from './FilterByValueFilterEditor';
 
@@ -157,6 +159,8 @@ export const filterByValueTransformRegistryItem: TransformerRegistryItem<FilterB
     'Removes rows of the query results using user-defined filters. This is useful if you can not filter your data in the data source.',
   categories: new Set([TransformerCategory.Filter]),
   help: getTransformationContent(DataTransformerID.filterByValue).helperDocs,
+  imageDark: darkImage,
+  imageLight: lightImage,
 };
 
 const useFieldsInfo = (data: DataFrame[]): DataFrameFieldsInfo => {
