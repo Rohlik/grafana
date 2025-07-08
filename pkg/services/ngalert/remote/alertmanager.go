@@ -667,7 +667,7 @@ func (am *Alertmanager) getFullState(ctx context.Context) (string, error) {
 
 // shouldSendConfig compares the remote Alertmanager configuration with our local one.
 // It returns true if the configurations are different.
-func (am *Alertmanager) shouldSendConfig(ctx context.Context, hash string) bool {
+func (am *Alertmanager) shouldSendConfig(ctx context.Context, config *remoteClient.UserGrafanaConfig) bool {
 	rc, err := am.mimirClient.GetGrafanaAlertmanagerConfig(ctx)
 	if err != nil {
 		// Log the error and return true so we try to upload our config anyway.
@@ -675,39 +675,39 @@ func (am *Alertmanager) shouldSendConfig(ctx context.Context, hash string) bool 
 		return true
 	}
 
-	if rc.Promoted != am.promoteConfig {
+	if rc.Promoted != config.Promoted {
 		return true
 	}
 
 	// TODO: Remove when the from address can be sent only in the 'smtp_config' field.
-	if rc.SmtpFrom != am.smtpFrom {
+	if rc.SmtpFrom != config.SmtpFrom {
 		am.log.Debug("SMTP 'from' address is different, sending the configuration to the remote Alertmanager", "remote", rc.SmtpFrom, "local", am.smtpFrom)
 		return true
 	}
 
 	// Compare SMTP configs.
-	if rc.SmtpConfig.EhloIdentity != am.smtp.EhloIdentity ||
-		rc.SmtpConfig.Password != am.smtp.Password ||
-		rc.SmtpConfig.FromAddress != am.smtp.FromAddress ||
-		rc.SmtpConfig.FromName != am.smtp.FromName ||
-		rc.SmtpConfig.Host != am.smtp.Host ||
-		rc.SmtpConfig.SkipVerify != am.smtp.SkipVerify ||
-		rc.SmtpConfig.StartTLSPolicy != am.smtp.StartTLSPolicy ||
-		len(rc.SmtpConfig.StaticHeaders) != len(am.smtp.StaticHeaders) ||
-		rc.SmtpConfig.User != am.smtp.User {
+	if rc.SmtpConfig.EhloIdentity != config.SmtpConfig.EhloIdentity ||
+		rc.SmtpConfig.Password != config.SmtpConfig.Password ||
+		rc.SmtpConfig.FromAddress != config.SmtpConfig.FromAddress ||
+		rc.SmtpConfig.FromName != config.SmtpConfig.FromName ||
+		rc.SmtpConfig.Host != config.SmtpConfig.Host ||
+		rc.SmtpConfig.SkipVerify != config.SmtpConfig.SkipVerify ||
+		rc.SmtpConfig.StartTLSPolicy != config.SmtpConfig.StartTLSPolicy ||
+		len(rc.SmtpConfig.StaticHeaders) != len(config.SmtpConfig.StaticHeaders) ||
+		rc.SmtpConfig.User != config.SmtpConfig.User {
 		am.log.Debug("SMTP config is different, sending the configuration to the remote Alertmanager")
 		return true
 	}
 
 	for k, v := range rc.SmtpConfig.StaticHeaders {
-		if value, ok := am.smtp.StaticHeaders[k]; !ok || v != value {
+		if value, ok := config.SmtpConfig.StaticHeaders[k]; !ok || v != value {
 			am.log.Debug("SMTP static headers are different, sending the configuration to the remote Alertmanager")
 			return true
 		}
 	}
 
-	if rc.Hash != hash {
-		am.log.Debug("Hash of the remote Alertmanager configuration is different, sending the configuration to the remote Alertmanager", "remote", rc.Hash, "local", hash)
+	if rc.Hash != config.Hash {
+		am.log.Debug("Hash of the remote Alertmanager configuration is different, sending the configuration to the remote Alertmanager", "remote", rc.Hash, "local", config.Hash)
 		return true
 	}
 	return false
