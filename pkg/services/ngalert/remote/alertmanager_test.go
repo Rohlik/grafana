@@ -364,12 +364,18 @@ func TestCompareAndSendConfiguration(t *testing.T) {
 
 	test, err := notifier.Load([]byte(testGrafanaConfigWithSecret))
 	require.NoError(t, err)
-	cfgWithDecryptedSecret := PostableUserConfigToGrafanaAlertmanagerConfig(test)
+	cfgWithDecryptedSecret := &client.GrafanaAlertmanagerConfig{
+		TemplateFiles:      test.TemplateFiles,
+		AlertmanagerConfig: test.AlertmanagerConfig,
+	}
 
 	testAutogenRoutes, err := notifier.Load([]byte(testGrafanaConfigWithSecret))
 	require.NoError(t, err)
 	require.NoError(t, testAutogenFn(nil, nil, 0, &testAutogenRoutes.AlertmanagerConfig, false))
-	cfgWithAutogenRoutes := PostableUserConfigToGrafanaAlertmanagerConfig(testAutogenRoutes)
+	cfgWithAutogenRoutes := &client.GrafanaAlertmanagerConfig{
+		TemplateFiles:      testAutogenRoutes.TemplateFiles,
+		AlertmanagerConfig: testAutogenRoutes.AlertmanagerConfig,
+	}
 
 	// Calculate hashes for expected configurations
 	cfgWithDecryptedSecretBytes, err := json.Marshal(cfgWithDecryptedSecret)
