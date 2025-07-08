@@ -1,4 +1,4 @@
-APP_SDK_VERSION := v0.39.0
+APP_SDK_VERSION := apiserver-custom-routes
 APP_SDK_DIR     := $(shell go env GOPATH)/bin/app-sdk-$(APP_SDK_VERSION)
 APP_SDK_BIN     := $(APP_SDK_DIR)/grafana-app-sdk
 
@@ -22,6 +22,6 @@ update-app-sdk: ## Update the Grafana App SDK dependency in go.mod
 generate: do-generate ## Run Grafana App SDK code generation
 
 .PHONY: do-generate
-do-generate: install-app-sdk update-app-sdk
+do-generate: #install-app-sdk update-app-sdk
 	## --defencoding=none and noschemasinmanifest are needed to avoid infinite loop while generating recursive models (see routingtree.cue)
 	@$(APP_SDK_BIN) generate --grouping=group --gogenpath=./pkg/apis --defencoding=none	--postprocess --noschemasinmanifest
