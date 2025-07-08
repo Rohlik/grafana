@@ -194,7 +194,10 @@ func NewAlertmanager(ctx context.Context, cfg AlertmanagerConfig, store stateSto
 		return nil, err
 	}
 
-	rawCfg, err := json.Marshal(pCfg)
+	rawCfg, err := json.Marshal(remoteClient.GrafanaAlertmanagerConfig{
+		TemplateFiles:      pCfg.TemplateFiles,
+		AlertmanagerConfig: pCfg.AlertmanagerConfig,
+	})
 	if err != nil {
 		return nil, err
 	}
@@ -206,7 +209,7 @@ func NewAlertmanager(ctx context.Context, cfg AlertmanagerConfig, store stateSto
 		amClient:          amc,
 		autogenFn:         autogenFn,
 		crypto:            crypto,
-		defaultConfig:     string(rawCfg),
+		defaultConfig:     cfg.DefaultConfig,
 		defaultConfigHash: fmt.Sprintf("%x", md5.Sum(rawCfg)),
 		log:               logger,
 		metrics:           metrics,
