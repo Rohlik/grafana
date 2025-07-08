@@ -32,6 +32,7 @@ import (
 	"github.com/grafana/grafana/pkg/services/ngalert/notifier/legacy_storage"
 	remoteClient "github.com/grafana/grafana/pkg/services/ngalert/remote/client"
 	"github.com/grafana/grafana/pkg/services/ngalert/sender"
+	"github.com/grafana/grafana/pkg/util"
 )
 
 type stateStore interface {
@@ -274,22 +275,16 @@ func (am *Alertmanager) checkReadiness(ctx context.Context) error {
 // CompareAndSendConfiguration checks whether a given configuration is being used by the remote Alertmanager.
 // If not, it sends the configuration to the remote Alertmanager.
 func (am *Alertmanager) CompareAndSendConfiguration(ctx context.Context, config *models.AlertConfiguration) error {
-	payload, err := am.loadConfig(ctx, []byte(config.AlertmanagerConfiguration))
+	payload, err := am.loadConfig(ctx, []byte(config.AlertmanagerConfiguration), config.CreatedAt, nil)
 	if err != nil {
 		return fmt.Errorf("unable to load configuration: %w", err)
 	}
-	rawPayload, err := json.Marshal(payload)
-	if err != nil {
-		return fmt.Errorf("unable to marshal decrypted configuration: %w", err)
-	}
-	configHash := fmt.Sprintf("%x", md5.Sum(rawPayload))
-
 	// Send the configuration only if we need to.
-	if !am.shouldSendConfig(ctx, configHash) {
+	if !am.shouldSendConfig(ctx, payload) {
 		return nil
 	}
 
-	return am.sendConfiguration(ctx, payload, configHash, config.CreatedAt, am.isDefaultConfiguration(configHash))
+	return am.sendConfiguration(ctx, payload)
 }
 
 func (am *Alertmanager) isDefaultConfiguration(configHash string) bool {
@@ -310,7 +305,7 @@ func decrypter(ctx context.Context, crypto Crypto) models.DecryptFn {
 	}
 }
 
-func (am *Alertmanager) loadConfig(ctx context.Context, raw []byte) (*remoteClient.GrafanaAlertmanagerConfig, error) {
+func (am *Alertmanager) loadConfig(ctx context.Context, raw []byte, createdAtEpoch int64, isDefaultPtr *bool) (*remoteClient.UserGrafanaConfig, error) {
 	c, err := notifier.Load(raw)
 	if err != nil {
 		return nil, err
@@ -339,29 +334,47 @@ func (am *Alertmanager) loadConfig(ctx context.Context, raw []byte) (*remoteClie
 
 	// TODO merge extra templates
 
-	return &remoteClient.GrafanaAlertmanagerConfig{
+	cfg := &remoteClient.GrafanaAlertmanagerConfig{
 		TemplateFiles:      c.TemplateFiles,
 		AlertmanagerConfig: mergeResult.Config,
-	}, nil
-}
+	}
 
-func (am *Alertmanager) sendConfiguration(ctx context.Context, cfg *remoteClient.GrafanaAlertmanagerConfig, hash string, createdAt int64, isDefault bool) error {
-	am.metrics.ConfigSyncsTotal.Inc()
+	rawCfg, err := json.Marshal(cfg)
+	if err != nil {
+		return nil, err
+	}
+	hash := fmt.Sprintf("%x", md5.Sum(rawCfg))
+
+	isDefault := false
+	if isDefaultPtr == nil {
+		isDefault = am.isDefaultConfiguration(hash)
+	} else {
+		isDefault = *isDefaultPtr
+	}
+
 	payload := &remoteClient.UserGrafanaConfig{
-		GrafanaAlertmanagerConfig: cfg,
-		Hash:                      hash,
-		CreatedAt:                 createdAt,
-		Default:                   isDefault,
-		Promoted:                  am.promoteConfig,
-		ExternalURL:               am.externalURL,
-		SmtpConfig:                am.smtp,
+		GrafanaAlertmanagerConfig: &remoteClient.GrafanaAlertmanagerConfig{
+			TemplateFiles:      c.TemplateFiles,
+			AlertmanagerConfig: mergeResult.Config,
+		},
+		Hash:        hash,
+		CreatedAt:   createdAtEpoch,
+		Default:     isDefault,
+		Promoted:    am.promoteConfig,
+		ExternalURL: am.externalURL,
+		SmtpConfig:  am.smtp,
 
 		// TODO: Remove once everything can be sent only in the 'smtp_config' field.
 		SmtpFrom:      am.smtpFrom,
 		StaticHeaders: am.staticHeaders,
 	}
 
-	if err := am.mimirClient.CreateGrafanaAlertmanagerConfig(ctx, payload); err != nil {
+	return payload, nil
+}
+
+func (am *Alertmanager) sendConfiguration(ctx context.Context, cfg *remoteClient.UserGrafanaConfig) error {
+	am.metrics.ConfigSyncsTotal.Inc()
+	if err := am.mimirClient.CreateGrafanaAlertmanagerConfig(ctx, cfg); err != nil {
 		am.metrics.ConfigSyncErrorsTotal.Inc()
 		return err
 	}
@@ -397,40 +410,24 @@ func (am *Alertmanager) SaveAndApplyConfig(ctx context.Context, cfg *apimodels.P
 		return err
 	}
 
-	payload, err := am.loadConfig(ctx, rawCopy)
+	payload, err := am.loadConfig(ctx, rawCopy, time.Now().Unix(), nil)
 	if err != nil {
 		return fmt.Errorf("unable to load configuration: %w", err)
 	}
 
-	rawCfg, err := json.Marshal(payload)
-	if err != nil {
-		return err
-	}
-	hash := fmt.Sprintf("%x", md5.Sum(rawCfg))
-
-	return am.sendConfiguration(ctx, payload, hash, time.Now().Unix(), false)
+	return am.sendConfiguration(ctx, payload)
 }
 
 // SaveAndApplyDefaultConfig sends the default Grafana Alertmanager configuration to the remote Alertmanager.
 func (am *Alertmanager) SaveAndApplyDefaultConfig(ctx context.Context) error {
 	am.log.Debug("Sending default configuration to a remote Alertmanager", "url", am.url)
-	payload, err := am.loadConfig(ctx, []byte(am.defaultConfig))
+	payload, err := am.loadConfig(ctx, []byte(am.defaultConfig), time.Now().Unix(), util.Pointer(true))
 	if err != nil {
 		return fmt.Errorf("unable to load the default configuration: %w", err)
 	}
-
-	rawCfg, err := json.Marshal(payload)
-	if err != nil {
-		return err
-	}
-	hash := fmt.Sprintf("%x", md5.Sum(rawCfg))
-
 	return am.sendConfiguration(
 		ctx,
 		payload,
-		hash,
-		time.Now().Unix(),
-		true,
 	)
 }
 
