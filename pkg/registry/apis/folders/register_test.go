@@ -498,6 +498,22 @@ func TestFolderAPIBuilder_Mutate_Create(t *testing.T) {
 				return
 			}
 			require.NoError(t, err)
+
+			err = b.Mutate(context.Background(), admission.NewAttributesRecord(
+				tt.input,
+				nil,
+				folders.SchemeGroupVersion.WithKind("folder"),
+				"stacks-123",
+				tt.input.Name,
+				folders.SchemeGroupVersion.WithResource("folders"),
+				"",
+				"CREATE",
+				nil,
+				true,
+				&user.SignedInUser{},
+			), nil)
+			require.NoError(t, err)
+			require.Equal(t, tt.input, tt.expected)
 		})
 	}
 }
@@ -604,6 +620,22 @@ func TestFolderAPIBuilder_Mutate_Update(t *testing.T) {
 				return
 			}
 			require.NoError(t, err)
+
+			err = b.Mutate(context.Background(), admission.NewAttributesRecord(
+				tt.input,
+				nil,
+				folders.SchemeGroupVersion.WithKind("folder"),
+				"stacks-123",
+				tt.input.Name,
+				folders.SchemeGroupVersion.WithResource("folders"),
+				"",
+				"CREATE",
+				nil,
+				true,
+				&user.SignedInUser{},
+			), nil)
+			require.NoError(t, err)
+			require.Equal(t, tt.input, tt.expected)
 		})
 	}
 }
